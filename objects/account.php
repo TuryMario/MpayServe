@@ -4,11 +4,13 @@ class Account{
     // database connection and table name
     private $DBconnect;
     private $table_name = "accounts";
+    private $user_table = "users";
 
     // object properties
     public $AccountNumber;
     public $AccountName;
     public $AccountBalance;
+    public $AccountType;
     //public $created = null;
 
     // constructor with $db as database connection
@@ -22,9 +24,19 @@ class Account{
     function read(){
       // select all query
       $query = "SELECT
-                  *
+                  accounts.AccountNumber,
+                  accounts.AccountName,
+                  accounts.AccountType,
+                  accounts.AccountBalance,
+                  accounts.Created,
+                  users.Email
+                
               FROM
                   " . $this->table_name . "
+
+INNER JOIN " . $this->user_table . "
+
+ON  accounts.AccountNumber = users.AccountNumber
               ";
               //echo $query;
 
@@ -44,18 +56,23 @@ class Account{
           $query = "INSERT INTO
                       " . $this->table_name . "
                   SET
-                      AccountName=:AccountName, AccountNumber=:AccountNumber";
+                      AccountName=:AccountName, AccountNumber=:AccountNumber 
+                      , AccountType=:AccountType, AccountBalance=:AccountBalance";
 
           // prepare query
           $stmt = $this->DBconnect->prepare($query);
 
           // sanitize
           $this->AccountName=htmlspecialchars(strip_tags($this->AccountName));
-          $this->AccountNumber=htmlspecialchars(strip_tags($this->AccountNumber));;
+          $this->AccountNumber=htmlspecialchars(strip_tags($this->AccountNumber));
+          $this->AccountType=htmlspecialchars(strip_tags($this->AccountType));
+          $this->AccountBalance=htmlspecialchars(strip_tags($this->AccountBalance));
 
           // bind values
           $stmt->bindParam(":AccountName", $this->AccountName);
           $stmt->bindParam(":AccountNumber", $this->AccountNumber);
+          $stmt->bindParam(":AccountType", $this->AccountType);
+          $stmt->bindParam(":AccountBalance", $this->AccountBalance);
 
           // execute query
           if($stmt->execute()){

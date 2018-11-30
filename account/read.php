@@ -37,7 +37,11 @@ if($num>0){
         $account_item=array(
             "AccountNumber" => $AccountNumber,
             "AccountName" => $AccountName,
-            //"Created" => $created
+            "AccountBalance" => $AccountBalance,
+            "AccountType" => $AccountType,
+                  "Created" => $Created,
+                  "Email" => $Email
+            
         );
 
         array_push($accounts_arr["records"], $account_item);

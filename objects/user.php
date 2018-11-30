@@ -6,9 +6,14 @@ class User{
     private $table_name = "users";
 
     // object properties
-    public $UserName;
+   
     public $FirstName;
     public $LastName;
+    public $Email;
+    public $AccountType;
+    public $AccountNumber;
+    public $Mobile;
+    public $UserId;
     //public $created = null;
 
     // constructor with $db as database connection
@@ -44,20 +49,32 @@ class User{
           $query = "INSERT INTO
                       " . $this->table_name . "
                   SET
-                      UserName=:UserName, FirstName=:FirstName, LastName=:LastName";
+                      FirstName=:FirstName, LastName=:LastName , Email=:Email
+                      , AccountType=:AccountType, Mobile=:Mobile, AccountNumber=:AccountNumber ,UserId=:UserId";
 
           // prepare query
           $stmt = $this->DBconnect->prepare($query);
 
           // sanitize
-          $this->UserName=htmlspecialchars(strip_tags($this->UserName));
+          
           $this->FirstName=htmlspecialchars(strip_tags($this->FirstName));
           $this->LastName=htmlspecialchars(strip_tags($this->LastName));
+          $this->Email=htmlspecialchars(strip_tags($this->Email));
+          $this->AccountType=htmlspecialchars(strip_tags($this->AccountType));
+          $this->Mobile=htmlspecialchars(strip_tags($this->Mobile));
+          $this->AccountNumber=htmlspecialchars(strip_tags($this->AccountNumber));
+          $this->UserId=htmlspecialchars(strip_tags($this->UserId));
 
           // bind values
-          $stmt->bindParam(":UserName", $this->UserName);
+          
           $stmt->bindParam(":FirstName", $this->FirstName);
           $stmt->bindParam(":LastName", $this->LastName);
+          $stmt->bindParam(":Email", $this->Email);
+          $stmt->bindParam(":AccountType", $this->AccountType);
+          $stmt->bindParam(":Mobile", $this->Mobile);
+          $stmt->bindParam(":AccountNumber", $this->AccountNumber);
+          $stmt->bindParam(":UserId", $this->UserId);
+          
 
           // execute query
           if($stmt->execute()){

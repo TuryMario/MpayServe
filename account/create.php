@@ -23,15 +23,18 @@ $data = json_decode(file_get_contents("php://input"));
 // make sure data is not empty
 if(
     !empty($data->AccountNumber) &&
-    !empty($data->AccountName)
+    !empty($data->AccountName)&&
+    !empty($data->AccountType)&&
+    !empty($data->AccountBalance)
 ){
 
     // set product property values
     $account->AccountNumber = $data->AccountNumber;
     $account->AccountName = $data->AccountName;
-    // $product->description = $data->description;
-    // $product->category_id = $data->category_id;
-    $account->created = date('Y-m-d H:i:s');
+    $account->AccountType = $data->AccountType;
+    $account->AccountBalance = $data->AccountBalance;
+   
+    // $account->created = date('Y-m-d H:i:s');
 
     // create the product
     if($account->create()){
