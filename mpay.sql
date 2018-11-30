@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.4.1deb2ubuntu2.1
--- http://www.phpmyadmin.net
+-- version 4.8.3
+-- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Nov 29, 2018 at 08:51 AM
--- Server version: 5.7.24-0ubuntu0.16.04.1
--- PHP Version: 7.0.32-0ubuntu0.16.04.1
+-- Host: 127.0.0.1
+-- Generation Time: Nov 30, 2018 at 09:12 AM
+-- Server version: 10.1.36-MariaDB
+-- PHP Version: 7.2.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -17,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `mpay`
+-- Database: `mpay_final`
 --
 
 -- --------------------------------------------------------
@@ -27,43 +29,37 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `accounts` (
-  `AccountNumber` int(25) NOT NULL,
+  `AccountNumber` varchar(255) NOT NULL,
   `AccountName` varchar(225) NOT NULL,
   `AccountType` varchar(25) NOT NULL,
-  `UserId` varchar(25) NOT NULL,
   `TransactionId` varchar(25) NOT NULL,
-  `Created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `Created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `AccountBalance` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `accounts`
 --
 
-INSERT INTO `accounts` (`AccountNumber`, `AccountName`, `AccountType`, `UserId`, `TransactionId`, `Created`) VALUES
-(1234, 'mariotury', '', '', '', '2018-11-26 11:17:55'),
-(12345, 'Tury', '', '', '', '2018-11-26 11:17:55');
+INSERT INTO `accounts` (`AccountNumber`, `AccountName`, `AccountType`, `TransactionId`, `Created`, `AccountBalance`) VALUES
+('1543509365123136319494210178', 'earl23 mon', 'client', '', '2018-11-29 19:36:05', 3450000),
+('1543509481989515864842696187', 'cruz matt', 'client', '', '2018-11-29 19:38:02', 1500000),
+('1543562952943218147575940775', 'pixelconsult uganda', 'partner', '', '2018-11-30 10:29:52', 35000000);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `transactionLogs`
+-- Table structure for table `transactionlogs`
 --
 
-CREATE TABLE `transactionLogs` (
-  `TransactionId` int(225) NOT NULL,
+CREATE TABLE `transactionlogs` (
+  `id` int(225) NOT NULL,
   `TransactionType` varchar(225) NOT NULL,
   `TransactionStatus` varchar(25) NOT NULL,
   `TransactionCode` varchar(25) NOT NULL,
-  `Created` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `Created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
   `Modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `transactionLogs`
---
-
-INSERT INTO `transactionLogs` (`TransactionId`, `TransactionType`, `TransactionStatus`, `TransactionCode`, `Created`, `Modified`) VALUES
-(1234, 'Withdraw', 'OK', '345', '2018-11-28 14:06:43', '2018-11-28 12:06:43');
 
 -- --------------------------------------------------------
 
@@ -72,37 +68,58 @@ INSERT INTO `transactionLogs` (`TransactionId`, `TransactionType`, `TransactionS
 --
 
 CREATE TABLE `users` (
-  `UserName` varchar(225) NOT NULL,
+  `UserId` varchar(255) NOT NULL,
   `FirstName` varchar(225) NOT NULL,
   `LastName` varchar(225) NOT NULL,
-  `DoB` date NOT NULL,
   `Email` varchar(25) NOT NULL,
   `AccountType` varchar(25) NOT NULL,
   `Mobile` varchar(25) NOT NULL,
   `Gender` varchar(25) NOT NULL,
-  `UserId` varchar(25) NOT NULL,
-  `Created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `Created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `AccountNumber` varchar(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`UserId`, `FirstName`, `LastName`, `Email`, `AccountType`, `Mobile`, `Gender`, `Created`, `AccountNumber`) VALUES
+('4OEzyTBWVnVViDKNoFRcd1SCUc13', 'cruz', 'matt', 'cruz256@gmail.com', 'client', '0789 232343', '', '2018-11-29 16:38:02', '1543509481989515864842696187'),
+('Y24RSSVJjPUGisqS3sCC8gNGzpp1', 'earl23', 'mon', 'earl23@gmail.com', 'client', '221321', '', '2018-11-29 16:36:05', '1543509365123136319494210178');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `transactionLogs`
+-- Indexes for table `accounts`
 --
-ALTER TABLE `transactionLogs`
-  ADD PRIMARY KEY (`TransactionId`);
+ALTER TABLE `accounts`
+  ADD PRIMARY KEY (`AccountNumber`);
+
+--
+-- Indexes for table `transactionlogs`
+--
+ALTER TABLE `transactionlogs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`UserId`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `transactionLogs`
+-- AUTO_INCREMENT for table `transactionlogs`
 --
-ALTER TABLE `transactionLogs`
-  MODIFY `TransactionId` int(225) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1235;
+ALTER TABLE `transactionlogs`
+  MODIFY `id` int(225) NOT NULL AUTO_INCREMENT;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
