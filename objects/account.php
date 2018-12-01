@@ -11,6 +11,7 @@ class Account{
     public $AccountName;
     public $AccountBalance;
     public $AccountType;
+    public $deposit;
     //public $created = null;
 
     // constructor with $db as database connection
@@ -110,6 +111,7 @@ ON  accounts.AccountNumber = users.AccountNumber
 
           // set values to object properties
           $this->AccountName = $row['AccountName'];
+          $this->AccountBalance = $row['AccountBalance'];
       }
 
       // update the account
@@ -183,6 +185,42 @@ ON  accounts.AccountNumber = users.AccountNumber
 
           return false;
       }
+
+      //credit method
+      function credit(){
+
+        // update query
+        $query = "UPDATE
+                    " . $this->table_name . "
+                SET
+                    AccountBalance = :AccountBalance
+                WHERE
+                    AccountNumber = :AccountNumber";
+
+        // prepare query statement
+        $stmt = $this->DBconnect->prepare($query);
+
+        // sanitize
+        // $this->AccountName=htmlspecialchars(strip_tags($this->AccountName));
+        // $this->price=htmlspecialchars(strip_tags($this->price));
+        // $this->description=htmlspecialchars(strip_tags($this->description));
+        $this->AccountBalance=htmlspecialchars(strip_tags($this->AccountBalance));
+        $this->AccountNumber=htmlspecialchars(strip_tags($this->AccountNumber));
+
+        // bind new values
+        // $stmt->bindParam(':AccountName', $this->AccountName);
+        $stmt->bindParam(':AccountBalance', $this->AccountBalance);
+        // $stmt->bindParam(':description', $this->description);
+        // $stmt->bindParam(':category_id', $this->category_id);
+        $stmt->bindParam(':AccountNumber', $this->AccountNumber);
+
+        // execute the query
+        if($stmt->execute()){
+            return true;
+        }
+
+        return false;
+    }
 
       // delete the product
       function delete(){
