@@ -123,9 +123,11 @@ class User{
                       " . $this->table_name . "
                   SET
                       FirstName = :FirstName,
-                      LastName = :LastName
+                      LastName = :LastName,
+                      Email = :Email,
+                      Mobile = :Mobile
                   WHERE
-                      UserName = :UserName";
+                  UserId = :UserId";
 
           // prepare query statement
           $stmt = $this->DBconnect->prepare($query);
@@ -133,18 +135,16 @@ class User{
           // sanitize
           $this->FirstName=htmlspecialchars(strip_tags($this->FirstName));
           $this->LastName=htmlspecialchars(strip_tags($this->LastName));
-          // $this->price=htmlspecialchars(strip_tags($this->price));
-          // $this->description=htmlspecialchars(strip_tags($this->description));
-          // $this->category_id=htmlspecialchars(strip_tags($this->category_id));
-          $this->UserName=htmlspecialchars(strip_tags($this->UserName));
+          $this->Email=htmlspecialchars(strip_tags($this->Email));
+          $this->Mobile=htmlspecialchars(strip_tags($this->Mobile));
+          $this->UserId=htmlspecialchars(strip_tags($this->UserId));
 
           // bind new values
           $stmt->bindParam(':FirstName', $this->FirstName);
           $stmt->bindParam(':LastName', $this->LastName);
-          // $stmt->bindParam(':price', $this->price);
-          // $stmt->bindParam(':description', $this->description);
-          // $stmt->bindParam(':category_id', $this->category_id);
-          $stmt->bindParam(':UserName', $this->UserName);
+          $stmt->bindParam(':Email', $this->Email);
+          $stmt->bindParam(':Mobile', $this->Mobile);
+          $stmt->bindParam(':UserId', $this->UserId);
 
           // execute the query
           if($stmt->execute()){
