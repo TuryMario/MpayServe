@@ -201,17 +201,13 @@ ON  accounts.AccountNumber = users.AccountNumber
         $stmt = $this->DBconnect->prepare($query);
 
         // sanitize
-        // $this->AccountName=htmlspecialchars(strip_tags($this->AccountName));
-        // $this->price=htmlspecialchars(strip_tags($this->price));
-        // $this->description=htmlspecialchars(strip_tags($this->description));
+     
         $this->AccountBalance=htmlspecialchars(strip_tags($this->AccountBalance));
         $this->AccountNumber=htmlspecialchars(strip_tags($this->AccountNumber));
 
         // bind new values
-        // $stmt->bindParam(':AccountName', $this->AccountName);
-        $stmt->bindParam(':AccountBalance', $this->AccountBalance);
-        // $stmt->bindParam(':description', $this->description);
-        // $stmt->bindParam(':category_id', $this->category_id);
+
+        $stmt->bindParam(':AccountBalance', $this->AccountBalance);      
         $stmt->bindParam(':AccountNumber', $this->AccountNumber);
 
         // execute the query

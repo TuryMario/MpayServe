@@ -20,15 +20,25 @@ $account = new Account($db);
 // get AccountNumber of product to be edited
 $data = json_decode(file_get_contents("php://input"));
 
+// make sure data is not empty
+if(
+    !empty($data->AccountNumber) &&
+    !empty($data->deposit)
+   
+){
 // set ID property of account to be edited
 $account->AccountNumber = $data->AccountNumber;
 
 
 // set deposit property values
-$dep= $data->deposit;
+ $dep= $data->deposit;
 
 $account->readOne();
-$account->AccountBalance = $account->AccountBalance  +   $account->deposit;
+$acc_bal = $account->AccountBalance;
+
+// get sum of acc bal and new deposit
+$new_bal = $dep + $acc_bal;
+$account->AccountBalance  =   $new_bal;
 
 // update the product
 if($account->credit()){
@@ -48,5 +58,15 @@ else{
 
     // tell the user
     echo json_encode(array("message" => "Unable to update Account."));
+}
+}
+// tell the user data is incomplete
+else{
+
+    // set response code - 400 bad request
+    http_response_code(400);
+
+    // tell the user
+    echo json_encode(array("message" => "Data is incomplete."));
 }
 ?>

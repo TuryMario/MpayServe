@@ -14,6 +14,7 @@ class User{
     public $AccountNumber;
     public $Mobile;
     public $UserId;
+    public $Created;
     //public $created = null;
 
     // constructor with $db as database connection
@@ -243,6 +244,19 @@ class User{
       //
       //     return $stmt;
       // }
+      function read_users(){
+        // select all query
+        $query = "SELECT * FROM " . $this->table_name;
+                //echo $query;
+  
+        // prepare query statement
+        $stmt = $this->DBconnect->prepare($query);
+  
+        // execute query
+        $stmt->execute();
+  
+        return $stmt;
+        }
 
 }
 
