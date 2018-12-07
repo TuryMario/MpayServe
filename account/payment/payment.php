@@ -21,15 +21,15 @@ $account->$status_code_message;
 
 
 //get acc bal
-$account->get_acc_bal();
-$account->sender_acc_bal;
+$account->sender_acc_bal = $account->get_acc_bal();
+
 
 $message_arr = array();
 
+///actual balance
+$account_actual_bal = $account->sender_acc_bal - $account->acc_charge ;
 
-
-
-if(($account->sender_acc_bal - $account->acc_charge ) > $account->amount){
+if($account_actual_bal > $account->amount){
 
     //yoAPI method
     $account->status = $account->yoAPI_pay($account->recepient_telno, $account->amount, $account->$narrative);
