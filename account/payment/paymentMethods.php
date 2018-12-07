@@ -15,7 +15,7 @@
     $account->mal_acc_balance = $account->get_acc_balance();
     //get commission
 
-    $account->mal_new_acc_bal = $account->mal_acc_balance + $account->commission;
+    $account->mal_new_acc_bal = $account->mal_acc_balance + $account->mal_commission;
 
     //From Account Update
     UpdateAccount($acount->mal_acc, $account->mal_new_acc_bal);
@@ -28,7 +28,8 @@
   add_pixel_acc_bal($acount->pixel_acc,$account->amount){
     //Get account balance
     $account->pixel_acc_balance = $account->get_acc_balance();
-    $account->pixel_new_acc_bal = $account->pixel_acc_balance + $account->commission;
+    $account->pixel_new_acc_bal = $account->pixel_acc_balance +  $account->pixel_commission;
+;
 
     //From Account Update
     UpdateAccount($acount->pixel_acc, $account->pixel_new_acc_bal);

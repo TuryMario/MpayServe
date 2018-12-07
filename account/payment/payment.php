@@ -26,15 +26,23 @@ $account->sender_acc_bal = $account->get_acc_bal();
 
 $message_arr = array();
 
+//getCharge on Account
+$account_charge = account->getCharge($account->sender_acc);
+$Total_charge = $account_charge + $Yopay_charge;
+
+//Calculate commission
+$account->mal_commission = $account->account_charge * 0.6;
+$account->pixel_commission = $account->account_charge * 0.4;
+
 ///actual balance
-$account_actual_bal = $account->sender_acc_bal - $account->acc_charge ;
+$account_actual_bal = $account->sender_acc_bal - $Total_charge ;
 
 if($account_actual_bal > $account->amount){
 
     //yoAPI method
     $account->status = $account->yoAPI_pay($account->recepient_telno, $account->amount, $account->$narrative);
   // yoAPI returns status ;
-       
+
     if($account->status == 'OK'){
 
         $account->subtract_sender_acc_bal($acount->sender_acc,$account->amount);
@@ -49,7 +57,7 @@ if($account_actual_bal > $account->amount){
 
     }else{
 
-        
+
         $message_arr['message'] = $account->$status_code_message;
 
     }
