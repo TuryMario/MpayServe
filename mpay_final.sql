@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 30, 2018 at 09:12 AM
+-- Generation Time: Dec 11, 2018 at 01:42 PM
 -- Server version: 10.1.36-MariaDB
 -- PHP Version: 7.2.10
 
@@ -32,6 +32,7 @@ CREATE TABLE `accounts` (
   `AccountNumber` varchar(255) NOT NULL,
   `AccountName` varchar(225) NOT NULL,
   `AccountType` varchar(25) NOT NULL,
+  `AccountCharge` int(255) NOT NULL,
   `TransactionId` varchar(25) NOT NULL,
   `Created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `AccountBalance` int(255) NOT NULL
@@ -41,10 +42,11 @@ CREATE TABLE `accounts` (
 -- Dumping data for table `accounts`
 --
 
-INSERT INTO `accounts` (`AccountNumber`, `AccountName`, `AccountType`, `TransactionId`, `Created`, `AccountBalance`) VALUES
-('1543509365123136319494210178', 'earl23 mon', 'client', '', '2018-11-29 19:36:05', 3450000),
-('1543509481989515864842696187', 'cruz matt', 'client', '', '2018-11-29 19:38:02', 1500000),
-('1543562952943218147575940775', 'pixelconsult uganda', 'partner', '', '2018-11-30 10:29:52', 35000000);
+INSERT INTO `accounts` (`AccountNumber`, `AccountName`, `AccountType`, `AccountCharge`, `TransactionId`, `Created`, `AccountBalance`) VALUES
+('1543509365123136319494210178', 'earl23 mon', 'client', 0, '', '2018-11-29 19:36:05', 3450000),
+('1543509481989515864842696187', 'cruz matt', 'client', 0, '', '2018-12-05 18:14:01', 2600000),
+('1543562952943218147575940775', 'pixelconsult uganda', 'partner', 0, '', '2018-11-30 10:29:52', 35000000),
+('1544101404558610911389235196', 'marios turyasingura', 'client', 0, '', '2018-12-07 17:11:08', 6000000);
 
 -- --------------------------------------------------------
 
@@ -84,8 +86,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`UserId`, `FirstName`, `LastName`, `Email`, `AccountType`, `Mobile`, `Gender`, `Created`, `AccountNumber`) VALUES
-('4OEzyTBWVnVViDKNoFRcd1SCUc13', 'cruz', 'matt', 'cruz256@gmail.com', 'client', '0789 232343', '', '2018-11-29 16:38:02', '1543509481989515864842696187'),
-('Y24RSSVJjPUGisqS3sCC8gNGzpp1', 'earl23', 'mon', 'earl23@gmail.com', 'client', '221321', '', '2018-11-29 16:36:05', '1543509365123136319494210178');
+('4OEzyTBWVnVViDKNoFRcd1SCUc13', 'cruz II', 'matt', 'cruz256@gmail.com', 'client', '0789 232343', '', '2018-12-07 14:10:12', '1543509481989515864842696187'),
+('gTpxiPv68TVVihXQE9FwihjpWlY2', 'tom', 'cruise', 'tom123@gmail.com', 'client', '5555-6666', '', '2018-12-06 14:29:41', '15440231651108720536287789513'),
+('i3G3dWEcZLSkNAOCReFjhufxa2f2', 'marios', 'turyasingura', 'marios@gmail.com', 'client', '0789 344521', '', '2018-12-06 13:03:24', '1544101404558610911389235196'),
+('sKHigHiVpvWIx9T5O4N4Ofma0s72', 'john', 'doe', 'john@gmail.com', 'client', '0789 343421', '', '2018-12-06 14:29:16', '15436780363663534879742217405'),
+('Y24RSSVJjPUGisqS3sCC8gNGzpp1', 'earl23', 'mon', 'earl23@gmail.com', 'client', '0700 123321', '', '2018-12-06 14:30:23', '1543509365123136319494210178');
 
 --
 -- Indexes for dumped tables

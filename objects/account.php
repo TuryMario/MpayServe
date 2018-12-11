@@ -1,12 +1,19 @@
 <?php
 class Account{
 
-    // database connection and table name
+    /**
+     * 
+     * database connection and table name
+     */
     private $DBconnect;
     private $table_name = "accounts";
     private $user_table = "users";
+    private $pix = "1543562952943218147575940775";
+    private $mal = "";
 
-    // object properties
+    /**
+     * object properties
+     */ 
     public $AccountNumber;
     public $AccountName;
     public $AccountBalance;
@@ -24,25 +31,30 @@ class Account{
     public $mal_acc;
     public $acc_charge;
 
-    //yoAPI return proprties
+    /** 
+     *  yoAPI return proprties
+     *  */
+
     public $status;
     public $transaction_status;
     public $transaction_reference;
     public $status_code;
     public $status_code_message;
-    //public $created = null;
 
-    // constructor with $db as database connection
-    public function __construct($db){ //,$accNum,$accName,$create
+    /**
+     * 
+     * constructor with $db as database connection
+     */ 
+public function __construct($db)
+    { 
         $this->DBconnect = $db;
-        //$this->AccountNumber = $accNum;
-        // $this->AccountName = $accName;
-        //$this->created = $create;
+
     }
 
-    function read(){
+function read()
+    {
       // select all query
-      $query = "SELECT
+     $query = "SELECT
                   accounts.AccountNumber,
                   accounts.AccountName,
                   accounts.AccountType,
@@ -50,14 +62,9 @@ class Account{
                   accounts.Created,
                   users.Email
 
-              FROM
-                  " . $this->table_name . "
+              FROM " . $this->table_name ." INNER JOIN " .$this->user_table . "
 
-INNER JOIN " . $this->user_table . "
-
-ON  accounts.AccountNumber = users.AccountNumber
-              ";
-              //echo $query;
+                  ON  accounts.AccountNumber = users.AccountNumber ";
 
       // prepare query statement
       $stmt = $this->DBconnect->prepare($query);
@@ -66,10 +73,13 @@ ON  accounts.AccountNumber = users.AccountNumber
       $stmt->execute();
 
       return $stmt;
-      }
+    }
 
-      // create product
-      function create(){
+      /**
+       *  create Account ethod
+       */
+function create()
+    {
 
           // query to insert record
           $query = "INSERT INTO
@@ -100,10 +110,13 @@ ON  accounts.AccountNumber = users.AccountNumber
 
           return false;
 
-      }
+    }
 
-      // used when filling up the update account form
-      function readOne(){
+      /**
+       *  used when filling up the update account form
+       */
+function readOne()
+    {
 
           // query to read single record
           $query = "SELECT
@@ -130,10 +143,13 @@ ON  accounts.AccountNumber = users.AccountNumber
           // set values to object properties
           $this->AccountName = $row['AccountName'];
           $this->AccountBalance = $row['AccountBalance'];
-      }
+    }
 
-      // update the account
-      function update(){
+      /**
+       *  update the account
+       */
+function update()
+    {
 
           // update query
           $query = "UPDATE
@@ -166,10 +182,13 @@ ON  accounts.AccountNumber = users.AccountNumber
           }
 
           return false;
-      }
+    }
 
-      // debit the account
-      function debit(){
+      /**
+       *  debit the account
+       */
+function debit()
+    {
 
           // update query
           $query = "UPDATE
@@ -202,10 +221,13 @@ ON  accounts.AccountNumber = users.AccountNumber
           }
 
           return false;
-      }
+    }
 
-      //credit method
-      function credit(){
+      /**
+       * credit Account  method
+       */
+function credit()
+    {
 
         // update query
         $query = "UPDATE
@@ -236,8 +258,11 @@ ON  accounts.AccountNumber = users.AccountNumber
         return false;
     }
 
-      // delete the product
-      function delete(){
+      /**
+       *  delete the Account
+       */
+function delete()
+    {
 
           // delete query
           $query = "DELETE FROM " . $this->table_name . " WHERE AccountNumber = ?";
@@ -258,10 +283,13 @@ ON  accounts.AccountNumber = users.AccountNumber
 
           return false;
 
-      }
+    }
 
-      // search products
-      function search($keywords){
+      /**
+       * search
+       *  */  
+function search($keywords)
+    {
 
           // select all query
           $query = "SELECT
@@ -289,15 +317,28 @@ ON  accounts.AccountNumber = users.AccountNumber
           $stmt->execute();
 
           return $stmt;
-      }
+    }
 
-      // Payment methods
+  /**
+   * PAYMENTS METHODS
+   * get_Account_Balance()   --> for the sender
+   * subtract_sender_acc_bal()  --> debit sender account
+   * get_mal_acc_balance()  --> get mal account balance
+   * update_mal_acc_bal()  --> update mal account balance
+   * get_pixel_acc_balance() --> get pix account balance
+   * update_pixel_acc_bal() --> update pix account balance
+   * 
+   */
 
-    // get account balance
-    function get_Account_Balance(){
+
+   /**
+    * get the sender account balance
+    */
+function get_Account_Balance()
+    {
         
           // query to read single record
-          $query = "SELECT AccountBalance FROM  " . $this->table_name . " WHERE AccountNumber = ? LIMIT 0,1";
+          $query = "SELECT AccountBalance,AccountCharge FROM  " . $this->table_name . " WHERE AccountNumber = ? LIMIT 0,1";
 
           // prepare query statement
           $stmt = $this->DBconnect->prepare( $query );
@@ -313,49 +354,156 @@ ON  accounts.AccountNumber = users.AccountNumber
 
           // set values to object properties
 
-          $this->AccountBalance = $row['AccountBalance'];
+          $result=array("AccountBalance" => $row['AccountBalance'],
+                         "AccountCharge" => $row['AccountCharge']);
 
-          return $this->AccountBalance;
+          return $result;
     }
 
 
-    function  subtract_sender_acc_bal(){
-        $this->new_sender_acc_bal = $this->sender_acc_bal - $this->amount;
+    /**
+     * uodate the sender account
+     */
 
-        //From Account Update
-        // UpdateAccount($this->sender_acc, $this->new_sender_acc_bal );
 
-        //From Account Update
-        // UpdateTransactionLog($this->recepient_telno, $this->sender_acc, $this->new_sender_acc_bal, $TransactionType,$Status, $TransactionStatus,$TransactionRef, $TransactionStatusCode ,$Created);
-      }
+function  subtract_sender_acc_bal($sender_acc,$actual_bal)
+    {
+        
+          // update query
+          $query = "UPDATE ".$this->table_name." SET AccountBalance = :AccountBalance WHERE AccountNumber = :AccountNumber";
 
-      //add money to mal
-      function add_mal_acc_bal(){
-        //Get account balance
-        // $this->mal_acc_balance = $this->get_acc_balance();
-        //get commission
+            // prepare query statement
+            $stmt = $this->DBconnect->prepare($query);
 
-        // $this->mal_new_acc_bal = $this->mal_acc_balance + $this->mal_commission;
+          // bind new values
 
-        //From Account Update
-        // UpdateAccount($this->mal_acc, $this->mal_new_acc_bal);
+            $stmt->bindParam(':AccountBalance', $actual_bal);
+            $stmt->bindParam(':AccountNumber', $sender_acc);
 
-        //From TransactionLog Update
-        // UpdateTransactionLog($this->mal_acc, $this->mal_new_acc_bal, $TransactionType,$Status, $TransactionStatus,$TransactionRef, $TransactionStatusCode ,$Created);
-      }
+        // execute the query
+                if($stmt->execute()){
+        return true;
+                }
 
-      //add money to pixel
-      function add_pixel_acc_bal(){
-        //Get account balance
-        $this->pixel_acc_balance = $this->get_acc_balance();
-        $this->pixel_new_acc_bal = $this->pixel_acc_balance +  $this->pixel_commission;
+        return false;
+     
+    }
 
-        //From Account Update
-        UpdateAccount($this->pixel_acc, $this->pixel_new_acc_bal);
+      /**
+       *   get mal account balance
+       */
+   
+function get_mal_acc_balance()
+    {
 
-        //From TransactionLog Update
-        UpdateTransactionLog($this->pixel_acc, $this->pixel_new_acc_bal, $TransactionType,$Status, $TransactionStatus,$TransactionRef, $TransactionStatusCode ,$Created);
-      }
+        // query to read single record
+        $query = "SELECT AccountBalance FROM ". $this->table_name . " WHERE AccountNumber = ? LIMIT 0,1";
+
+        // prepare query statement
+        $stmt = $this->DBconnect->prepare( $query );
+
+        // bind id of product to be updated
+        $stmt->bindParam(1, $mal);
+
+        // execute query
+        $stmt->execute();
+
+        // get retrieved row
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // set values to object properties
+        $this->AccountBalance = $row['AccountBalance'];
+
+        return $this->AccountBalance;
+
+    }
+
+     /*
+      *  update mal account
+      */
+     
+function update_mal_acc_bal($mal_new_account_balance)
+    {
+       
+    // update query
+    $query = "UPDATE " . $this->table_name ." SET AccountBalance = :AccountBalance WHERE AccountNumber = :AccountNumber";
+     
+     // prepare query statement
+     $stmt = $this->DBconnect->prepare($query);
+          
+     // bind new values 
+     $stmt->bindParam(':AccountBalance', $mal_new_account_balance);
+     $stmt->bindParam(':AccountNumber', $sender_acc);
+     
+     // execute the query
+         if($stmt->execute())
+         {
+
+        return true;
+        }
+
+        return false;
+    }
+
+
+     /*
+      * get pixel account balance  
+      */
+function get_pixel_acc_balance()
+    {
+
+        // query to read single record
+        $query = "SELECT AccountBalance FROM ". $this->table_name . " WHERE AccountNumber = ? LIMIT 0,1";
+
+        // prepare query statement
+        $stmt = $this->DBconnect->prepare( $query );
+
+        // bind id of product to be updated
+        $stmt->bindParam(1, $pix);
+
+        // execute query
+        $stmt->execute();
+
+        // get retrieved row
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // set values to object properties
+        $this->AccountBalance = $row['AccountBalance'];
+
+        return $this->AccountBalance;
+
+    }
+
+      
+      /*
+      * add money to pixel  
+      */
+function update_pixel_acc_bal($pix_new_account_balance)
+    {
+          // update query
+        $query = "UPDATE " . $this->table_name ." SET AccountBalance = :AccountBalance WHERE AccountNumber = :AccountNumber";
+     
+        // prepare query statement
+         $stmt = $this->DBconnect->prepare($query);
+         
+            // bind new values 
+        $stmt->bindParam(':AccountBalance', $mal_new_account_balance);
+        $stmt->bindParam(':AccountNumber', $sender_acc);
+    
+            // execute the query
+        if($stmt->execute())
+            {
+
+       return true;
+            }
+
+       return false;
+       
+    }
+
+    /**
+     *   END OF PAYMENTS METHODS
+     */
 
 }
 

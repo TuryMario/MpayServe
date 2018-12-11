@@ -6,7 +6,7 @@ class DB{
     private $host = "localhost";
     private $db_name = "mpay_final";
     private $username = "root";
-    private $password = "mario1211";
+    private $password = "";
 
     // public function __construct(){
     //   $this->DBConnection();

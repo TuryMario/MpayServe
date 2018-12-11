@@ -20,15 +20,16 @@ $account->status_code;
 $account->$status_code_message;
 
 
-//get acc bal
-$account->sender_acc_bal = $account->get_Account_Balance();
+//get acc bal and account charge
+$result = $account->get_Account_Balance();
+ $account->sender_acc_bal = $result->AccountBalance;
+$account->account_charge =  $result->AccountCharge;
 
-
+//return message array
 $message_arr = array();
 
-//getCharge on Account
-// $account_charge = account->getCharge($account->sender_acc);
-$Total_charge = $account_charge + $Yopay_charge;
+
+$Total_charge = $account->account_charge + $Yopay_charge;
 
 //Calculate commission
 $account->mal_commission = $account->account_charge * 0.6;
@@ -39,19 +40,46 @@ $account_actual_bal = $account->sender_acc_bal - $Total_charge ;
 
 if($account_actual_bal > $account->amount){
 
-    //yoAPI method
-    $account->status = $account->yoAPI_pay($account->recepient_telno, $account->amount, $account->$narrative);
+    //getting the actual balance to be inserted in the database
+    $account_actual_bal = $account_actual_bal - $account->amount; 
+    //yoAPI
+     include_once '../../../mpay_api/yopay.php';
+    
   // yoAPI returns status ;
-
+  $account->status = $response['Status'];
     if($account->status == 'OK'){
 
-        $account->subtract_sender_acc_bal($acount->sender_acc,$account->amount);
+        $account->subtract_sender_acc_bal($sender_acc =$acount->sender_acc,$actual_bal =$account_actual_bal);
 
-        //add money to mal
-        $account->add_mal_acc_bal($acount->mal_acc,$account->amount);
+        
+        /*   update malcom  account
+         *   get mal account balance
+         *   add commission 
+         *    then update the account 
+         */
 
-        //add money to pixel
-        $account->add_pixel_acc_bal($acount->pixel_acc,$account->amount);
+         //get mal account balance
+        $mal_account_balance = $account->get_mal_acc_balance();
+
+        //add commission to account balance
+        $mal_new_account_balance = $mal_account_balance + $account->mal_commission;
+        //then update the account 
+        $account->update_mal_acc_bal($mal_new_account_balance);
+
+        /*   update pixel  account
+         *   get pixel account balance
+         *   add commission 
+         *   then update the account 
+         */
+        
+        // get pixel account balance
+        $pixel_account_balance = $account->get_pixel_acc_balance();
+
+        // add commission 
+        $pix_new_account_balance = $pixel_account_balance + $account->pixel_commission;
+
+        //then update  pixel account
+        $account->update_pixel_acc_bal($pix_new_account_balance);
 
         $transactionLog->transac_log($account, $TransactionType,$Status, $TransactionStatus,$TransactionRef, $TransactionStatusCode ,$Created);
 
