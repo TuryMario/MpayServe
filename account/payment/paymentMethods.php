@@ -29,7 +29,6 @@
     //Get account balance
     $account->pixel_acc_balance = $account->get_acc_balance();
     $account->pixel_new_acc_bal = $account->pixel_acc_balance +  $account->pixel_commission;
-;
 
     //From Account Update
     UpdateAccount($acount->pixel_acc, $account->pixel_new_acc_bal);

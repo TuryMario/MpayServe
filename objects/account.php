@@ -31,7 +31,7 @@ class Account{
                   accounts.AccountBalance,
                   accounts.Created,
                   users.Email
-                
+
               FROM
                   " . $this->table_name . "
 
@@ -57,7 +57,7 @@ ON  accounts.AccountNumber = users.AccountNumber
           $query = "INSERT INTO
                       " . $this->table_name . "
                   SET
-                      AccountName=:AccountName, AccountNumber=:AccountNumber 
+                      AccountName=:AccountName, AccountNumber=:AccountNumber
                       , AccountType=:AccountType, AccountBalance=:AccountBalance";
 
           // prepare query
@@ -201,13 +201,13 @@ ON  accounts.AccountNumber = users.AccountNumber
         $stmt = $this->DBconnect->prepare($query);
 
         // sanitize
-     
+
         $this->AccountBalance=htmlspecialchars(strip_tags($this->AccountBalance));
         $this->AccountNumber=htmlspecialchars(strip_tags($this->AccountNumber));
 
         // bind new values
 
-        $stmt->bindParam(':AccountBalance', $this->AccountBalance);      
+        $stmt->bindParam(':AccountBalance', $this->AccountBalance);
         $stmt->bindParam(':AccountNumber', $this->AccountNumber);
 
         // execute the query
@@ -271,6 +271,45 @@ ON  accounts.AccountNumber = users.AccountNumber
           $stmt->execute();
 
           return $stmt;
+      }
+
+      // Payment methods
+      subtract_sender_acc_bal($acount->sender_acc,$account->amount){
+        $account->new_sender_acc_bal = $account->sender_acc_bal - $account->amount;
+
+        //From Account Update
+        UpdateAccount($acount->sender_acc, $account->new_sender_acc_bal );
+
+        //From Account Update
+        UpdateTransactionLog($acount->recepient_telno, $acount->sender_acc, $account->new_sender_acc_bal, $TransactionType,$Status, $TransactionStatus,$TransactionRef, $TransactionStatusCode ,$Created);
+      }
+
+      //add money to mal
+      add_mal_acc_bal($acount->mal_acc,$account->amount){
+        //Get account balance
+        $account->mal_acc_balance = $account->get_acc_balance();
+        //get commission
+
+        $account->mal_new_acc_bal = $account->mal_acc_balance + $account->mal_commission;
+
+        //From Account Update
+        UpdateAccount($acount->mal_acc, $account->mal_new_acc_bal);
+
+        //From TransactionLog Update
+        UpdateTransactionLog($acount->mal_acc, $account->mal_new_acc_bal, $TransactionType,$Status, $TransactionStatus,$TransactionRef, $TransactionStatusCode ,$Created);
+      }
+
+      //add money to pixel
+      add_pixel_acc_bal($acount->pixel_acc,$account->amount){
+        //Get account balance
+        $account->pixel_acc_balance = $account->get_acc_balance();
+        $account->pixel_new_acc_bal = $account->pixel_acc_balance +  $account->pixel_commission;
+
+        //From Account Update
+        UpdateAccount($acount->pixel_acc, $account->pixel_new_acc_bal);
+
+        //From TransactionLog Update
+        UpdateTransactionLog($acount->pixel_acc, $account->pixel_new_acc_bal, $TransactionType,$Status, $TransactionStatus,$TransactionRef, $TransactionStatusCode ,$Created);
       }
 
 }
