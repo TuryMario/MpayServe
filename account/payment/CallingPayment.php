@@ -21,13 +21,13 @@ $account->$status_code_message;
 
 
 //get acc bal
-$account->sender_acc_bal = $account->get_acc_bal();
+$account->sender_acc_bal = $account->get_Account_Balance();
 
 
 $message_arr = array();
 
 //getCharge on Account
-$account_charge = account->getCharge($account->sender_acc);
+// $account_charge = account->getCharge($account->sender_acc);
 $Total_charge = $account_charge + $Yopay_charge;
 
 //Calculate commission

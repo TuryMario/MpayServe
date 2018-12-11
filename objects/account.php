@@ -7,10 +7,10 @@ class Account{
     private $user_table = "users";
 
     // object properties
-    public $thisNumber;
-    public $thisName;
-    public $thisBalance;
-    public $thisType;
+    public $AccountNumber;
+    public $AccountName;
+    public $AccountBalance;
+    public $AccountType;
     public $deposit;
 
 
@@ -292,6 +292,33 @@ ON  accounts.AccountNumber = users.AccountNumber
       }
 
       // Payment methods
+
+    // get account balance
+    function get_Account_Balance(){
+        
+          // query to read single record
+          $query = "SELECT AccountBalance FROM  " . $this->table_name . " WHERE AccountNumber = ? LIMIT 0,1";
+
+          // prepare query statement
+          $stmt = $this->DBconnect->prepare( $query );
+
+          // bind id of product to be updated
+          $stmt->bindParam(1, $this->AccountNumber);
+
+          // execute query
+          $stmt->execute();
+
+          // get retrieved row
+          $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+          // set values to object properties
+
+          $this->AccountBalance = $row['AccountBalance'];
+
+          return $this->AccountBalance;
+    }
+
+
     function  subtract_sender_acc_bal(){
         $this->new_sender_acc_bal = $this->sender_acc_bal - $this->amount;
 
