@@ -3,14 +3,18 @@ class TransactionLog{
 
     // database connection and table name
     private $DBconnect;
-    private $table_name = "transactionLogs";
+    private $transaction_logs = "transactionlogs";
 
     // object properties
     public $TransactionId;
     public $TransactionType;
     public $TransactionStatus;
-    public $TransactionCode;
-    public $Created = null;
+    public $TransactionStatusCode;
+    public $TransactionRef;
+    public $TransactionStatusMessage;
+    public $Status;
+    public $recepient_telno;
+    public $AccountNumber;
 
     // constructor with $db as database connection
     public function __construct($db){ //,$accNum,$accName,$create
@@ -25,7 +29,7 @@ class TransactionLog{
       $query = "SELECT
                   *
               FROM
-                  " . $this->table_name . "
+                  " . $this->transaction_logs . "
               ";
               //echo $query;
 
@@ -39,42 +43,35 @@ class TransactionLog{
       }
 
       // create transactionLog
-      function create_transactionLog(){
-          // query to insert record
-          $query = "INSERT INTO
-                      " . $this->table_name . "
-                  SET
-                      TransactionId=:TransactionId,
-                      TransactionType=:TransactionType,
-                      TransactionStatus=:TransactionStatus,
-                      TransactionCode=:TransactionCode,
-                      Created=:Created";
+      /**
+ * Transaction log method
+ * Entering the transaction logs
+ */
 
-          // prepare query
-          $stmt = $this->DBconnect->prepare($query);
+function create_transactionLog($accountNo, $accountName,$Status,$TransactionStatus,$TransactionRef,$TransactionStatusCode,$TransactionStatusMessage,$TransactionType,$recipient_name,$amount,$Total_charge,$narrative)
+    {
+    
 
-          // sanitize
-          $this->TransactionId=htmlspecialchars(strip_tags($this->TransactionId));
-          $this->TransactionType=htmlspecialchars(strip_tags($this->TransactionType));
-          $this->TransactionStatus=htmlspecialchars(strip_tags($this->TransactionStatus));
-          $this->TransactionCode=htmlspecialchars(strip_tags($this->TransactionCode));
-          $this->Created=htmlspecialchars(strip_tags($this->Created));
+          $query ="INSERT INTO `transactionlogs`( `AccountNumber`, `AccountName`,
+             `TransactionType`, `TransactionStatusMessage`, `TransactionRef`, `TransactionStatus`,
+              `TransactionCode`, `RecipientNo`,`recipient_name`, `recipient_amount`, `total_charge`,`narrative`) VALUES 
+              ('".$accountNo."','".$accountName."','".$TransactionType."', '".$TransactionStatusMessage."',
+              '".$TransactionRef."','".$TransactionStatus."',
+              '".$TransactionStatusCode."',".$this->recepient_telno.",'".$recipient_name."',
+              '".$amount."','".$Total_charge."','".$narrative."')";
+              
+            // prepare query
+            $stmt = $this->DBconnect->prepare($query);
+  
+            // execute query
+            if($stmt->execute()){
+                return true;
+            }
+  
+            return false;  
+          
 
-          // bind values
-          $stmt->bindParam(":TransactionId", $this->TransactionId);
-          $stmt->bindParam(":TransactionType", $this->TransactionType);
-          $stmt->bindParam(":TransactionStatus", $this->TransactionStatus);
-          $stmt->bindParam(":TransactionCode", $this->TransactionCode);
-          $stmt->bindParam(":Created", $this->Created);
-
-          // execute query
-          if($stmt->execute()){
-              return true;
-          }
-
-          return false;
-
-      }
+    }
 
       // // used when filling up the update account form
       // function readOne(){

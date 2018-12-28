@@ -27,20 +27,36 @@ class User{
 
     function read_user(){
       // select all query
-      $query = "SELECT
-                  *
-              FROM
-                  " . $this->table_name . "
-              ";
-              //echo $query;
+      $query = "SELECT  * FROM " .$this->table_name." WHERE UserId = ?  LIMIT 0,1";
+     
 
-      // prepare query statement
-      $stmt = $this->DBconnect->prepare($query);
+    // prepare query statement
+        $stmt = $this->DBconnect->prepare( $query );
 
-      // execute query
-      $stmt->execute();
+    // bind id of product to be updated
+        $stmt->bindParam(1, $this->UserId);
 
-      return $stmt;
+    // execute query
+        $stmt->execute();
+
+// get retrieved row
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// set values to object properties
+
+
+        $user_info['info']=array(
+                        "FirstName" =>$row['FirstName'],
+                        "LastName" => $row['LastName'],
+                        "Email" => $row['Email'],
+                        "AccountType" => $row['AccountType'],
+                        "Mobile" => $row['Mobile'],
+                        "Gender" => $row['Gender'],
+                        "Created" => $row['Created'],
+                        "AccountNumber" => $row['AccountNumber'],
+                    );
+      
+                    return $user_info;
       }
 
       // create user

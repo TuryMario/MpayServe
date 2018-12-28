@@ -11,6 +11,7 @@ $account->$narrative;
 $account->$pixel_acc;
 $account->mal_acc;
 $account->acc_charge;
+$account->$TransactionType = "withdraw";
 
 //yoAPI return proprties
 $account->status;
@@ -81,12 +82,12 @@ if($account_actual_bal > $account->amount){
         //then update  pixel account
         $account->update_pixel_acc_bal($pix_new_account_balance);
 
-        $transactionLog->transac_log($account, $TransactionType,$Status, $TransactionStatus,$TransactionRef, $TransactionStatusCode ,$Created);
+        $transactionLog->create_transactionLog($accountNo, $accountName );
 
     }else{
 
 
-        $message_arr['message'] = $account->$status_code_message;
+        $message_arr['message'] = "Something Went Wrong";
 
     }
 

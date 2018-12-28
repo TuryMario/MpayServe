@@ -6,6 +6,7 @@ header("Content-Type: application/json; charset=UTF-8");
 // include database and object files
 include_once '../config/DB.php';
 include_once '../objects/transactionLog.php';
+include_once '../objects/user.php';
 
 // instantiate database and transactionLog object
 $database = new DB();
@@ -14,7 +15,24 @@ $db = $database->DBConnection();
 // initialize object
 $transactionLog = new TransactionLog($db);
 
+// instatiate user
+$user = new User($db);
+// set ID property of record to read
+// $user->UserId = isset($_GET['user']) ? $_GET['user'] : die();
+
+$data = file_get_contents("php://input");
+$data = json_decode($data, true);
+
+
+
+$user->UserId  = $data['user'];
 // query transactionLogs
+
+
+$info = $user->read_user();   
+$transactionLog->AccountNumber = $info['info']['AccountNumber'];
+
+
 $stmt = $transactionLog->read_transactionLog();
 $num = $stmt->rowCount();
 
@@ -35,12 +53,12 @@ if($num>0){
         extract($row);
 
         $transactionLog_item=array(
-            "TransactionId" => $TransactionId,
-            "TransactionType" => $TransactionType,
-            "TransactionStatus" => $TransactionStatus,
-            "TransactionCode" => $TransactionCode,
-            "Created" => $Created,
-            //"Created" => $created
+            "recipient_name" => $recipient_name,
+            "RecipientNo" => $RecipientNo,
+            "created" => $created,
+            "narrative" => $narrative,
+            "total_charge" => $total_charge,
+            "recipient_amount" => $recipient_amount
         );
 
         array_push($transactionLogs_arr["records"], $transactionLog_item);

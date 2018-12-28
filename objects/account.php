@@ -9,7 +9,8 @@ class Account{
     private $table_name = "accounts";
     private $user_table = "users";
     private $pix = "1543562952943218147575940775";
-    private $mal = "";
+    private $mal = "1544101404558610911389235196";
+    public $Yopay_charge =500;
 
     /**
      * object properties
@@ -25,11 +26,13 @@ class Account{
     public $amount;
     public $time_stamp;
     public $sender_acc;
-    public $recepient_telno;
+    public $recipient_no;
+    public $recipient_name;
     public $narrative;
     public $pixel_acc;
     public $mal_acc;
     public $acc_charge;
+    public $TransactionType;
 
     /** 
      *  yoAPI return proprties
@@ -370,15 +373,15 @@ function  subtract_sender_acc_bal($sender_acc,$actual_bal)
     {
         
           // update query
-          $query = "UPDATE ".$this->table_name." SET AccountBalance = :AccountBalance WHERE AccountNumber = :AccountNumber";
+          $query = "UPDATE ".$this->table_name." SET AccountBalance = '$actual_bal' WHERE AccountNumber = '$sender_acc'";
 
             // prepare query statement
             $stmt = $this->DBconnect->prepare($query);
 
           // bind new values
 
-            $stmt->bindParam(':AccountBalance', $actual_bal);
-            $stmt->bindParam(':AccountNumber', $sender_acc);
+            // $stmt->bindParam(':AccountBalance', $actual_bal);
+            // $stmt->bindParam(':AccountNumber', $sender_acc);
 
         // execute the query
                 if($stmt->execute()){
@@ -403,7 +406,7 @@ function get_mal_acc_balance()
         $stmt = $this->DBconnect->prepare( $query );
 
         // bind id of product to be updated
-        $stmt->bindParam(1, $mal);
+        $stmt->bindParam(1, $this->mal);
 
         // execute query
         $stmt->execute();
@@ -433,7 +436,7 @@ function update_mal_acc_bal($mal_new_account_balance)
           
      // bind new values 
      $stmt->bindParam(':AccountBalance', $mal_new_account_balance);
-     $stmt->bindParam(':AccountNumber', $sender_acc);
+     $stmt->bindParam(':AccountNumber', $this->mal);
      
      // execute the query
          if($stmt->execute())
@@ -459,7 +462,7 @@ function get_pixel_acc_balance()
         $stmt = $this->DBconnect->prepare( $query );
 
         // bind id of product to be updated
-        $stmt->bindParam(1, $pix);
+        $stmt->bindParam(1, $this->pix);
 
         // execute query
         $stmt->execute();
@@ -487,8 +490,8 @@ function update_pixel_acc_bal($pix_new_account_balance)
          $stmt = $this->DBconnect->prepare($query);
          
             // bind new values 
-        $stmt->bindParam(':AccountBalance', $mal_new_account_balance);
-        $stmt->bindParam(':AccountNumber', $sender_acc);
+        $stmt->bindParam(':AccountBalance', $pix_new_account_balance);
+        $stmt->bindParam(':AccountNumber', $this->pix);
     
             // execute the query
         if($stmt->execute())
@@ -500,6 +503,7 @@ function update_pixel_acc_bal($pix_new_account_balance)
        return false;
        
     }
+
 
     /**
      *   END OF PAYMENTS METHODS
